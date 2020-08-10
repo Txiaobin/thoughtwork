@@ -29,7 +29,7 @@ genome_tags.csv 包含标签的描述:tagId  标签id
 读取rates.csv文件，完成：
 将每1分做为一档，电影的评分共分为5档，(0:1], (1,2], (2, 3], (3, 4], (4, 5], 通过pandas包求出每个评分档共有多少部电影
 添加一个comment列，对平均分4分以上的电影标‘推荐’，其他标‘不推荐’，输出到一个comment.csv中
-
+'''
 import pandas as pd
 
 ratings = pd.read_csv('date/ml-latest-small/ratings.csv',index_col=None)
@@ -41,9 +41,9 @@ ratings.to_csv('date/ml-latest-small/comment.csv', index = False)
 
 ratings = pd.read_csv('date/ml-latest-small/comment.csv',index_col=None)
 
-
+'''
 对数据集中的3个csv文件进行聚合，生成一个csv，包含电影的信息，其中每部电影一行，信息包括电影名称、主演、平均分、所有tag
-
+'''
 import pandas as pd
 import numpy as np
 
@@ -52,11 +52,11 @@ tags = pd.read_csv('date/ml-latest-small/tags.csv',index_col=None)
 movies = pd.read_csv('date/ml-latest-small/movies.csv',index_col=None)
 
 
-movies['rating_mean'] = ratings.groupby(['movieId']).rating.agg(np.mean) 
+movies['rating_mean'] = ratings.groupby(['movieId'])['rating'].transform('mean') 
 
 result = pd.merge(movies, tags, on = 'movieId', how = 'left')
 
-
+'''
 使用pandas读取此数据集的内容，并统计得到以下信息：
 1.一共有多少不同的用户
 2.一共有多少不同的电影
@@ -78,6 +78,3 @@ movies = pd.read_csv('date/ml-latest-small/movies.csv',index_col=None)
 
 usernum = ratings.groupby(['userId'])
 
-
-df=pd.DataFrame({'id':[1,2,1,1,3,3,2,2]})
-temp = df['id'].value_counts()
