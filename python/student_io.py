@@ -5,3 +5,4 @@ def convert_file_format(input_file_path: str, output_file_path: str,
 
 '''
 f = pd.read_csv('student.csv')
+f.to_json('newstudent.json')
