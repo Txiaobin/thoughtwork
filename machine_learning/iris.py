@@ -12,6 +12,7 @@ Created on Mon Aug 10 17:24:27 2020
 '''
 
 import pydot
+import pydotplus
 from sklearn import datasets
 from sklearn import tree
 from sklearn.cross_validation import train_test_split
@@ -41,3 +42,14 @@ tree.export_graphviz(mytree, out_file=dot_data)
 graph = pydot.graph_from_dot_data(dot_data.getvalue())
 graph[0].write_dot('iris_simple.dot')
 graph[0].write_png('iris_simple.png')
+
+
+dot_data = tree.export_graphviz(clf,
+                                out_file = None,
+                                feature_names = iris.feature_names,
+                                class_names = iris.target_names,
+                                filled=True,
+                                rounded=True
+                               )
+graph = pydotplus.graph_from_dot_data(dot_data)
+display(Image(graph.create_png()))
