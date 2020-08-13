@@ -18,10 +18,8 @@ from sklearn import tree
 from sklearn.cross_validation import train_test_split
 
 iris = datasets.load_iris()
-X=iris.data
-y=iris.target           
-target_names=iris.target_names      #y的值列表:0:setosa,1:versicolor,2:virginica
-feature_names=iris.feature_names    #特征X的名称列表
+X=iris['data']
+y=iris['target']
 
 X_train,X_test,Y_train,Y_test = train_test_split(X,y,test_size=0.25,random_state=1)
 mytree = tree.DecisionTreeClassifier(max_depth=3)
@@ -38,8 +36,8 @@ print("sepallength=6,sepalwidth=1,petallength=3,petalwidth=1最可能是",target
 
 dot_data = tree.export_graphviz(mytree,
                                 out_file = None,
-                                feature_names = iris.feature_names,
-                                class_names = iris.target_names,
+                                feature_names = iris['feature_names'],
+                                class_names = iris['target_names'],
                                 filled=True,
                                 rounded=True
                                )
