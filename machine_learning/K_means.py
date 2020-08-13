@@ -15,8 +15,8 @@ from sklearn import datasets
 from sklearn.cluster import KMeans
 
 iris = datasets.load_iris()
-X=iris.data         
-feature_names=iris.feature_names    #特征X的名称列表
+X=iris['data']         
+feature_names=iris['feature_names']    #特征X的名称列表
 
 mykmeans = KMeans(n_clusters=3)
 y_pred = mykmeans.fit_predict(X)

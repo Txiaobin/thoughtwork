@@ -7,7 +7,7 @@ Created on Mon Aug 10 11:22:10 2020
 
 import pandas as pd
 import matplotlib.pyplot as plt
-iris = pd.read_csv('../date/iris.csv')
+iris = pd.read_csv('iris.csv')
 
 groups = iris.groupby('Name')
 
