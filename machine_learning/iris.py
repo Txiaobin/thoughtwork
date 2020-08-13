@@ -11,17 +11,17 @@ Created on Mon Aug 10 17:24:27 2020
 可视化决策树,解释下什么样的花最可能是setosa
 '''
 
-import pydot
 import pydotplus
+from IPython.display import Image, display
 from sklearn import datasets
 from sklearn import tree
 from sklearn.cross_validation import train_test_split
-from sklearn.externals.six import StringIO
 
-
-X,y=datasets.load_iris(return_X_y=True)             #X与y
-target_names=datasets.load_iris().target_names      #y的值列表:0:setosa,1:versicolor,2:virginica
-feature_names=datasets.load_iris().feature_names    #特征X的名称列表
+iris = datasets.load_iris()
+X=iris.data
+y=iris.target           
+target_names=iris.target_names      #y的值列表:0:setosa,1:versicolor,2:virginica
+feature_names=iris.feature_names    #特征X的名称列表
 
 X_train,X_test,Y_train,Y_test = train_test_split(X,y,test_size=0.25,random_state=1)
 mytree = tree.DecisionTreeClassifier(max_depth=3)
@@ -36,15 +36,7 @@ print("预测率：%s"%(sum/len(Y_test)))
 
 print("sepallength=6,sepalwidth=1,petallength=3,petalwidth=1最可能是",target_names[mytree.predict([[6,1,3,1]])[0]])
 
-    
-dot_data = StringIO()
-tree.export_graphviz(mytree, out_file=dot_data)
-graph = pydot.graph_from_dot_data(dot_data.getvalue())
-graph[0].write_dot('iris_simple.dot')
-graph[0].write_png('iris_simple.png')
-
-
-dot_data = tree.export_graphviz(clf,
+dot_data = tree.export_graphviz(mytree,
                                 out_file = None,
                                 feature_names = iris.feature_names,
                                 class_names = iris.target_names,
@@ -53,3 +45,8 @@ dot_data = tree.export_graphviz(clf,
                                )
 graph = pydotplus.graph_from_dot_data(dot_data)
 display(Image(graph.create_png()))
+
+
+'''
+可以看出，花瓣短窄的花最可能是setosa。
+'''
