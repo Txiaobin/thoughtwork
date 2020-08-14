@@ -4,128 +4,118 @@ Created on Thu Aug  6 12:41:19 2020
 
 @author: xiaobin
 """
-
 import numpy as np
 
-class parking():
+'''
+需求1
+构造一个停车场，停车场可以停车和取车，停车成功后得到停车票。 用户取车的时候也需要提供停车票，停车票有效，才可以成功取到车。
+'''
+class parking_lot(object):
     
-    def _init_(self):
-        self.num_max = 100                                      #停车场最大车位数
+    def _init_(self, max_num, park_name):                       
         self.car_num = 0                                        #停车场停车数
-        self.mark = np.random.rand(1, self.num_max)             #每个车位对应的停车票
+        self.name = park_name                                   #停车场名字
+        self.max_num = max_num                                  #停车场最大车位数
+        self.ticket_mark = [0] * max_num                        #停车票标记数组
+        self.ticket_to_carid = dict()                           #停车票和carid对应
         
-    def parking(self):
-        if(self.car_num < num_max):                                     #停车场不为空，可以停车
-            print('停车票是', self.mark(1,self.car_num))
-            self.car_num = self.car_num + 1
-            return self.mark(1,self.car_num-1)
-        else:
-            print('停车场已满')
-            return -1
-            
-    def pick_up(self, user_mark):
-        for i  in range(self.num_max):
-            if(self.mark(1,i) == user_mark):                        #判断停车票是否正确
-                print('停车票正确，请取车!')
-                self.car_num = self.car_num - 1
-                return 0
-        print('停车票错误!')
-        return -1
-            
-    def print_spare(self):
-        return self.num_max - self.car_num, self.num_max
-    
-    
-class parkingboy():
-    
-    def _init_(self, park_lot):
-        self.car_num = 0
-        self.mark_num = {}
-        self.park_lot = park_lot
-        
-    def parking_car(self, park_num):
-        park_mark = self.park_lot[park_num].parking()
-        self.mark[park_mark] = park_num
-        
-    def pick_up_car(self, park_mark):
-        park_num = self.mark[park_mark]
-        self.park_lot[park_num].pick_up(park_mark)
-            
-        
-class smart_parkingboy():
-    
-    def _init_(self, park_lot):
-        self.car_num = 0
-        self.mark_num = {}
-        self.park_lot = park_lot
-        
-    def parking_car(self, park_num):
-        max_parknum = 0
-        max_parkspare = 0
-        for i in self.park_lot:
-            parkspare, temp = self.park_lot.print_spare()
-            if(max_parkspare < parkspare):
-                max_parknum = i
-                max_parkspare = parkspare
-        park_mark = self.park_lot[max_parknum].parking()
-        self.mark[park_mark] = park_num
-        
-    def pick_up_car(self, park_mark):
-        park_num = self.mark[park_mark]
-        self.park_lot[park_num].pick_up(park_mark)
-        
-        
-class super_parkingboy():
-    
-    def _init_(self, park_lot):
-        self.car_num = 0
-        self.mark_num = {}
-        self.park_lot = park_lot
-        
-    def parking_car(self, park_num):
-        max_parknum = 0
-        max_parkspare = 0
-        for i in self.park_lot:
-            parkspare, max_num = self.park_lot.print_spare()
-            temp = parkspare / max_num
-            if(max_parkspare < temp):
-                max_parknum = i
-                max_parkspare = temp
-        park_mark = self.park_lot[max_parknum].parking()
-        self.mark[park_mark] = park_num
-        
-    def pick_up_car(self, park_mark):
-        park_num = self.mark[park_mark]
-        self.park_lot[park_num].pick_up(park_mark)
+    def ticket(self, carid):
+        for i in self.ticket_mark:                              
+            if i == 0:                                          #找到第一个不为空的停车位，将车位号作为停车票
+                self.ticket_to_carid = {carid, i}               #将carid与停车票存储下来
+                return i
 
-        
-class parkingmanager():
+    def parking(self,carid):
+        if not self.max_num - self.car_num:                                     #停车场不为空，可以停车
+            ticket_num = self.ticket(carid)                                          #停车，获取停车票
+            print('%s 停入 %s,停车票为%s',(carid, self.name, ticket_num))       
+            self.car_num = self.car_num + 1                                     #停车场已停车数量加一
+            return ticket_num
+        else:                                                                   #停车场满，不能停车
+            print('停车场已满')
+            return None
+            
+    def pick_up(self, carid, ticket_num):               
+        if self.ticket_to_carid['carid'] == ticket_num:                         #匹配停车票，相同取车
+            print('停车场：%s；车票号 %s -- 正确；取出车辆：%s' % (self.name, ticket_num, carid))
+            self.ticket_to_carid.pop(carid)
+            self.ticket_mark[ticket_num] = 0                                    #将停车位置空
+        else:
+            print('停车票错误!')
     
+
+'''
+需求2
+构造一个停车小弟（ParkingBoy），他能够将车顺序停放到多个停车场，并可以取出
+'''
+class parkingboy(object):
+
     def _init_(self, park_lot):
-        self.car_num = 0
-        self.mark_num = {}
-        self.park_lot = park_lot
+        self.car_to_parklot = dict()
+        self.park_lots = park_lot
+
+    def check(self):
+        for park_lot in self.park_lots:
+            if park_lot.max_num - park_lot.car_num:
+                return park_lot
+        return None
+
+    def park(self, cars):
+        for car in cars:
+            if not self.check():
+                print('所有停车场已停满，无法停车！')
+                return
+            self.car_to_parklot[car] = self.check()
         
-    def parking_car(self, park_num):
-        max_parknum = 0
-        max_parkspare = 0
-        for i in self.park_lot:
-            parkspare, max_num = self.park_lot.print_spare()
-            temp = parkspare / max_num
-            if(max_parkspare < temp):
-                max_parknum = i
-                max_parkspare = temp
-        park_mark = self.park_lot[max_parknum].parking()
-        self.mark[park_mark] = park_num
+    def pickup(self, tickets):
+        for car, ticket in tickets:
+            park_lot = self.car_to_parklot[car]
+            park_lot.pick_up(car, ticket)
+
+
+'''
+需求3
+构造一个聪明的停车小弟（Smart Parking Boy），他能够将车停在空车位最多的那个停车场      
+'''
+class smart_parkingboy(parkingboy):
+    
+    def check(self):
+        remainder = []
+        for park_lot in self.park_lots:
+            temp = park_lot.max_num - park_lot.car_num
+            if temp:
+                remainder.append(temp)
+        myindex = remainder.index(max(remainder))
+        return self.park_lots[myindex]
         
-    def pick_up_car(self, park_mark):
-        park_num = self.mark[park_mark]
-        self.park_lot[park_num].pick_up(park_mark)
+
+'''
+需求4
+构造一个超级停车小弟（Super Parking Boy），他能够将车停在空置率最高的那个停车场
+'''  
+class super_parkingboy(parkingboy):
+    
+    def check(self):
+        remainder = []
+        for park_lot in self.park_lots:
+            temp = park_lot.max_num - park_lot.car_num
+            temp = temp / park_lot.max_num
+            if temp:
+                remainder.append(temp)
+        myindex = remainder.index(max(remainder))
+        return self.park_lots[myindex]
+
+
+'''
+需求5
+构造停车场的经理（Parking Manager），他要管理多个停车仔，让他们停车，同时也可以自己停车
+'''        
+class parkingmanager(parkingboy):
+    
+    def boy_park(self, cars, boy):
+        boy.park(cars)
         
-    def boy_parking(self, park_num, boy):
-        boy.parking_car(park_num)
-        
-    def boy_pickup(self, park_mark, boy):
-        boy.pick_up_car(park_mark)
+    def self_park(self, cars):
+        self.park(cars)
         
         
