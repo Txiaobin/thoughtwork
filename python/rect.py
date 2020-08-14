@@ -9,8 +9,8 @@ class Rect:
     def intersect(self, rect: 'Rect') -> bool:
         # TODO: implement me
 
-        if (self.x + self.width > rect.x and rect.x + rect.width > self.x and self.y + self.height > rect.y and
-            rect.y + rect.height > self.y):
-            return True
-        else:
+        if (self.x + self.width <= rect.x or self.y + self.height <= rect.y) or 
+          （rect.x + rect.width <= self.x or rect.y + rect.height <= self.y):
             return False
+        else:
+            return True
