@@ -118,4 +118,8 @@ class parkingmanager(parkingboy):
     def self_park(self, cars):
         self.park(cars)
         
-        
+if __name__ == "__main__":
+    parking_lot = ParkingLot(1)
+    car = Car()
+    ticket = parking_lot.park_car(car)
+    car = parking_lot.take_car(ticket)
