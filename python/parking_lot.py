@@ -12,7 +12,7 @@ import numpy as np
 '''
 class parking_lot(object):
     
-    def _init_(self, max_num, park_name):                       
+    def __init__(self, max_num, park_name):                     
         self.car_num = 0                                        #停车场停车数
         self.name = park_name                                   #停车场名字
         self.max_num = max_num                                  #停车场最大车位数
@@ -22,13 +22,13 @@ class parking_lot(object):
     def ticket(self, carid):
         for i in self.ticket_mark:                              
             if i == 0:                                          #找到第一个不为空的停车位，将车位号作为停车票
-                self.ticket_to_carid = {carid, i}               #将carid与停车票存储下来
+                self.ticket_to_carid[carid] = i                 #将carid与停车票存储下来
                 return i
 
     def parking(self,carid):
-        if not self.max_num - self.car_num:                                     #停车场不为空，可以停车
-            ticket_num = self.ticket(carid)                                          #停车，获取停车票
-            print('%s 停入 %s,停车票为%s',(carid, self.name, ticket_num))       
+        if (self.max_num - self.car_num):                                     #停车场不为空，可以停车
+            ticket_num = self.ticket(carid)                                     #停车，获取停车票
+            print('%s 停入 %s,停车票为%d' % (carid, self.name, ticket_num))       
             self.car_num = self.car_num + 1                                     #停车场已停车数量加一
             return ticket_num
         else:                                                                   #停车场满，不能停车
@@ -36,12 +36,14 @@ class parking_lot(object):
             return None
             
     def pick_up(self, carid, ticket_num):               
-        if self.ticket_to_carid['carid'] == ticket_num:                         #匹配停车票，相同取车
+        if self.ticket_to_carid[carid] == ticket_num:                         #匹配停车票，相同取车
             print('停车场：%s；车票号 %s -- 正确；取出车辆：%s' % (self.name, ticket_num, carid))
             self.ticket_to_carid.pop(carid)
             self.ticket_mark[ticket_num] = 0                                    #将停车位置空
+            return carid
         else:
             print('停车票错误!')
+            return None
     
 
 '''
@@ -117,9 +119,48 @@ class parkingmanager(parkingboy):
         
     def self_park(self, cars):
         self.park(cars)
-        
+'''     
 if __name__ == "__main__":
-    parking_lot = ParkingLot(1)
-    car = Car()
-    ticket = parking_lot.park_car(car)
-    car = parking_lot.take_car(ticket)
+    park_lot = parking_lot(100, 'park_1')
+    carid = '豫A88888'
+    ticket_num = park_lot.parking(carid)
+    park_lot.pick_up(carid, ticket_num)
+'''
+
+import unittest
+from unittest import TestCase
+
+class TestParkingLot(TestCase):
+    def test_park_two_cars_should_get_different_tickets(self):
+        park_lot = parking_lot(2, 'park')
+        carid = ['豫A88888', '豫A66666']
+        t1 = park_lot.parking(carid[0])
+        t2 = park_lot.parking(carid[1])
+        self.assertNotEquals(t1, t2)
+
+    def test_when_park_car_and_parking_lot_is_full_should_get_exception(self):
+        park_lot = parking_lot(1, 'park')
+        carid = ['豫A88888', '豫A66666']
+        park_lot.parking(carid[0])
+        self.assertRaises(Exception, park_lot.parking, carid[1])
+
+    def test_get_car(self):
+        park_lot = parking_lot(1, 'park')
+        carid = '豫A88888'
+        t1 = park_lot.parking(carid)
+        taken_car = park_lot.pick_up(carid, t1)
+        self.assertEquals(carid, taken_car)
+
+    def test_get_car_with_wrong_ticket_should_get_exception(self):
+        park_lot = parking_lot(1, 'park')
+        self.assertRaises(Exception, park_lot.pick_up, '停车票错误!')
+
+    def test_get_cars_when_a_car_is_taken_should_get_exception(self):
+        park_lot = parking_lot(1, 'park')
+        carid = '豫A88888'
+        t = park_lot.parking(carid)
+        park_lot.pick_up(carid, t)
+        self.assertRaises(Exception, park_lot.pick_up, t)
+
+if __name__ == '__main__':
+    unittest.main()
