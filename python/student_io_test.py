@@ -11,10 +11,11 @@ class StudentIOTest(unittest.TestCase):
         with open('student.json', 'r', encoding='utf8') as f:
             students = json.load(f)
 
-        self.assertDictEqual(students[1], {
+        self.assertDictEqual(students[0], {
             'name': '张三', 'age': '18', 'gender': '男', 'class': '高三三班', 'score': '98'
         })
 
 
 if __name__ == '__main__':
     unittest.main()
+

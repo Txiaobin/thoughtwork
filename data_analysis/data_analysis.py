@@ -69,4 +69,4 @@ print('2. 一共有 %s 不同的电影' % (str(len(set(m)))))
 print('3. 一共有 %s 不同的电影种类' % (str(len(set(m_type)))))
 print('4. 一共有 %s 电影没有外部链接' % (str(len(no_link_movie_id))))
 print('5. 2018年一共有 %s 人进行电影评分' % (str(len(set(u)))))
-
+print('6. 2018年评分在5分以上的电影及其对应标签' % )
