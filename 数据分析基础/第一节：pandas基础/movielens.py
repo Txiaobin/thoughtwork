@@ -32,7 +32,7 @@ genome_tags.csv 包含标签的描述:tagId  标签id
 '''
 import pandas as pd
 
-ratings = pd.read_csv('date/ml-latest-small/ratings.csv',index_col=None)
+ratings = pd.read_csv('ml-latest-small/ratings.csv',index_col=None)
 result = ratings.groupby(['rating']).size()
 
 ratings['comment'] = ratings['rating'].apply(lambda x: '推荐' if x >= 4 else '不推荐')

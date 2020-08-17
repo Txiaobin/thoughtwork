@@ -24,9 +24,9 @@ genome_tags.csv 包含标签的描述:tagId  标签id
 import pandas as pd
 import numpy as np
 
-ratings = pd.read_csv('date/ml-latest-small/ratings.csv',index_col=None)
-tags = pd.read_csv('date/ml-latest-small/tags.csv',index_col=None)
-movies = pd.read_csv('date/ml-latest-small/movies.csv',index_col=None)
+ratings = pd.read_csv('ml-latest-small/ratings.csv',index_col=None)
+tags = pd.read_csv('ml-latest-small/tags.csv',index_col=None)
+movies = pd.read_csv('ml-latest-small/movies.csv',index_col=None)
 
 
 movies['rating_mean'] = ratings.groupby(['movieId'])['rating'].transform('mean') 
