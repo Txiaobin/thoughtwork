@@ -17,7 +17,7 @@ BEGIN
     from student stu
     inner join score sco
     on stu.id = sco.student_id
-    group by 1
+    group by 1;
 
     CREATE TABLE IF NOT EXISTS `subject_score` as
     SELECT sub.subject,
@@ -25,7 +25,7 @@ BEGIN
     from subject sub
     inner join score sco
     on sub.id = sco.subject_id
-    group by 1
+    group by 1;
 
     CREATE TABLE IF NOT EXISTS `student_stat` as
     select stu.name,
@@ -52,6 +52,6 @@ BEGIN
         inner join subject_score sts
         on t.subject = sts.subject
     ) sub
-    on sub.id = sco.subject_id
+    on sub.id = sco.subject_id;
 END$$
 delimiter;
